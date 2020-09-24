@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>localStorage</title>
+</head>
+<body>
+  <div class="container">
+    <button onclick="add()">add</button>
+    <div>
+      <span>click total:</span>
+      <span class="display"></span>
+    </div>
+  </div>
+</body>
+<script>
+  function add() {
+    let number = Number.parseInt(localStorage.getItem('number')) || 0;
+    number++;
+    localStorage.setItem('number', number);
+  }
+  window.addEventListener('storage', e => document.querySelector('.display').textContent = e.newValue)
+</script>
+</html>

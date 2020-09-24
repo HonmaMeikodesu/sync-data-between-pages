@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Event Source</title>
+</head>
+<body>
+  <div class="container">
+    Current Online:
+    <span></span>
+  </div>
+</body>
+<script>
+  const es = new EventSource('/new_messages');
+  es.addEventListener('new_connection' ,e => document.querySelector('span').textContent = e.data)
+</script>
+</html>

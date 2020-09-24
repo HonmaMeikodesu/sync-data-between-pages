@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>idbObserver</title>
+</head>
+<body>
+  <div class="container">
+    <button onclick="add()">add</button>
+    <button onclick="reset()">reset</button>
+    <div>
+      <span>click total:</span>
+      <span class="display"></span>
+    </div>
+  </div>
+</body>
+<script>
+  const request = indexedDB.open('myDB');
+  request.onupgradeneeded = function(event) {
+    let db = event.target.result;
+    let objectStore = db.createObjectStore("repo");
+    objectStore.transaction.oncomplete = function(event) {
+      db.transaction(['repo'], 'readwrite').objectStore('repo').put(0, 'online')
+    }
+  };
+  request.onsuccess = function(event) {
+    let db = event.target.result;
+    db.transaction(['repo'], 'readonly').objectStore('repo').get('online').onsuccess = (e) => {
+      document.querySelector('.display').textContent = e.target.result;
+    }
+    const observer = new IDBObserver((changes) => {
+      document.querySelector('.display').textContent = changes.records.get('repo')[0].value;
+    })
+    observer.observe(
+      db,
+      db.transaction(['repo'], 'readwrite'),
+      {
+        operationTypes: ['put'],
+        values: true
+      }
+    )
+  }
+
+  function add() {
+    const request = indexedDB.open('myDB');
+    request.onsuccess = function(event) {
+      let db = event.target.result;
+      db.transaction(['repo'], 'readonly').objectStore('repo').get('online').onsuccess = function(event) {
+        let res = event.target.result + 1;
+        db.transaction(['repo'], 'readwrite').objectStore('repo').put(res, 'online').oncomplete = () => {
+          document.querySelector('.display').textContent = res;
+          db.close();
+        }
+      }
+    }
+  }
+
+  function reset() {
+    const request = indexedDB.open('myDB');
+    request.onsuccess = function(event) {
+      let db = event.target.result;
+      db.transaction(['repo'], 'readwrite').objectStore('repo').put(0, 'online').oncomplete = () => {
+          document.querySelector('.display').textContent = res;
+          db.close();
+        }
+    }
+  }
+</script>
+</html>

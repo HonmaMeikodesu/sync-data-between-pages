@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>sender page</title>
+</head>
+<body>
+  <button onclick="send()">send</button>
+</body>
+<script>
+  const otherWindow = window.open('http://localhost:7001/another.html');
+  function send() {
+    otherWindow.postMessage({ message: 'incoming messages!' }, '*');
+  }
+</script>
+</html>

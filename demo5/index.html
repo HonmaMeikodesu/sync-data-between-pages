@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Service Worker</title>
+</head>
+<body>
+  <div class="container"></div>
+  <div>
+    <span>Online:</span>
+    <span class="display"></span>
+  </div>
+</body>
+<script>
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('/sw.js').then(reg => {
+      navigator.serviceWorker.addEventListener('message', e => document.querySelector('.display').textContent = e.data);
+      navigator.serviceWorker.controller.postMessage({type: 'newClient'});
+    })
+  }
+  window.onunload = () => {
+    navigator.serviceWorker.controller.postMessage({type: 'fin'});
+  }
+</script>
+</html>
